@@ -1,6 +1,6 @@
-@TaskManagementAPI_HostAddress = http://localhost:5104
+@TaskManagement.API_HostAddress = http://localhost:5104
 
-GET {{TaskManagementAPI_HostAddress}}/weatherforecast/
+GET {{TaskManagement.API_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###

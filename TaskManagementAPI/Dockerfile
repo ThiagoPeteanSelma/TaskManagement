@@ -9,17 +9,17 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["TaskManagementAPI/TaskManagementAPI.csproj", "TaskManagementAPI/"]
-RUN dotnet restore "./TaskManagementAPI/TaskManagementAPI.csproj"
+COPY ["TaskManagement.API/TaskManagement.API.csproj", "TaskManagement.API/"]
+RUN dotnet restore "./TaskManagement.API/TaskManagement.API.csproj"
 COPY . .
-WORKDIR "/src/TaskManagementAPI"
-RUN dotnet build "./TaskManagementAPI.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/TaskManagement.API"
+RUN dotnet build "./TaskManagement.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./TaskManagementAPI.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./TaskManagement.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "TaskManagementAPI.dll"]
+ENTRYPOINT ["dotnet", "TaskManagement.API.dll"]

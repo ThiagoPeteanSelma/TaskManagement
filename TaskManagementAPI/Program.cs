@@ -1,3 +1,9 @@
+using Microsoft.EntityFrameworkCore;
+using TaskManagement.API.Data;
+using TaskManagement.API.Mappings;
+using TaskManagement.API.Repositories;
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +12,13 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddDbContext<TaskManagementDbContext>(options =>
+options.UseSqlServer(builder.Configuration.GetConnectionString("TaskManagementConnectionString")));
+
+builder.Services.AddScoped<IUsersRepository, SQLUsersRepository>();
+
+builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 
 var app = builder.Build();
 
