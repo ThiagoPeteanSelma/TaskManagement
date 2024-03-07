@@ -5,7 +5,7 @@
 namespace TaskManagement.API.Migrations
 {
     /// <inheritdoc />
-    public partial class changecolumns : Migration
+    public partial class ChangeColumns : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

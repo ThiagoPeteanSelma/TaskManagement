@@ -1,6 +1,7 @@
+using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using TaskManagement.API.Data;
-using TaskManagement.API.Mappings;
+using TaskManagement.API.Profiles;
 using TaskManagement.API.Repositories;
 
 
@@ -13,12 +14,17 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.
+    AddFluentValidation(options => options.RegisterValidatorsFromAssemblyContaining<Program>());
+
 builder.Services.AddDbContext<TaskManagementDbContext>(options =>
 options.UseSqlServer(builder.Configuration.GetConnectionString("TaskManagementConnectionString")));
 
 builder.Services.AddScoped<IUsersRepository, SQLUsersRepository>();
+builder.Services.AddScoped<IProjectsRepository, SQLProjectsRepository>();
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
 var app = builder.Build();
 

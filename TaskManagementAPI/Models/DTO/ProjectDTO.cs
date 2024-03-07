@@ -1,7 +1,11 @@
-﻿namespace TaskManagement.API.Models.Domain
+﻿using System.Runtime.CompilerServices;
+using TaskManagement.API.Models.Domain;
+
+namespace TaskManagement.API.Models.DTO
 {
-    public class Project
+    public class ProjectDTO
     {
+
         /// <summary>
         /// Identification Project
         /// </summary>
@@ -29,14 +33,22 @@
         /// <summary>
         /// Date to create the project
         /// </summary>
-        public DateTime DtCreateDate { get; set; }
+        public required DateTime DtCreateDate { get; set; }
         /// <summary>
         /// User who created the project. Considered the project manager
         /// </summary>
         public Guid UserId { get; set; }
 
+
         // Navigation properties
-        public User? User { get; set; }
-        public IEnumerable<ProjectTask>? ProjectTasks { get; set; }
+        public UserDTO? UserDTO { get; set; }
+
+        public  IEnumerable<ProjectTaskDTO>? ProjectTaskDTO { get; set;}
+#pragma warning disable CS8604 // Possible null reference argument.
+        public int CountTask => ProjectTaskDTO.Count();
+        public int CountTaskPending => ProjectTaskDTO.Where(x => x.Status == 1).Count();
+        public int CountTaskInProgress => ProjectTaskDTO.Where(x => x.Status == 2).Count();
+        public int CountTaskCompleted => ProjectTaskDTO.Where(x => x.Status == 3).Count();
+#pragma warning restore CS8604 // Possible null reference argument.
     }
 }

@@ -13,7 +13,7 @@ namespace TaskManagement.API.Migrations
 {
     [DbContext(typeof(TaskManagementDbContext))]
     [Migration("20240306215620_change columns")]
-    partial class changecolumns
+    partial class ChangeColumns
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

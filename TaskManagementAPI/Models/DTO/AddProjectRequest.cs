@@ -1,11 +1,9 @@
-﻿namespace TaskManagement.API.Models.Domain
+﻿namespace TaskManagement.API.Models.DTO
 {
-    public class Project
+    public class AddProjectRequest
     {
-        /// <summary>
-        /// Identification Project
-        /// </summary>
-        public Guid Id { get; set; }
+        public Guid? IdUser { get; set; }
+        public string? Email { get; set; }
         /// <summary>
         /// Project Name
         /// </summary>
@@ -26,17 +24,5 @@
         /// Date limit to finish project
         /// </summary>
         public required DateTime DeadLine { get; set; }
-        /// <summary>
-        /// Date to create the project
-        /// </summary>
-        public DateTime DtCreateDate { get; set; }
-        /// <summary>
-        /// User who created the project. Considered the project manager
-        /// </summary>
-        public Guid UserId { get; set; }
-
-        // Navigation properties
-        public User? User { get; set; }
-        public IEnumerable<ProjectTask>? ProjectTasks { get; set; }
     }
 }
