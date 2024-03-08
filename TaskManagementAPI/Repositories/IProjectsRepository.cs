@@ -8,5 +8,7 @@ namespace TaskManagement.API.Repositories
         Task<IEnumerable<Project>> GetAllAsync(FilterProject filterProject);
         Task<Project?> GetByIdAsync(Guid projectId);
         Task<Project> AddProjectAsync(Project project);
+        Task<Project?> UpdateProjectAsync(Guid id, Project project);
+        Task<Project?> DeleteProjectAsync(Guid id);
     }
 }

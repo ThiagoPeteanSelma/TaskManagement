@@ -38,17 +38,13 @@ namespace TaskManagement.API.Models.DTO
         /// User who created the project. Considered the project manager
         /// </summary>
         public Guid UserId { get; set; }
-
-
         // Navigation properties
-        public UserDTO? UserDTO { get; set; }
+        public UserDTO? User { get; set; }
 
-        public  IEnumerable<ProjectTaskDTO>? ProjectTaskDTO { get; set;}
-#pragma warning disable CS8604 // Possible null reference argument.
-        public int CountTask => ProjectTaskDTO.Count();
-        public int CountTaskPending => ProjectTaskDTO.Where(x => x.Status == 1).Count();
-        public int CountTaskInProgress => ProjectTaskDTO.Where(x => x.Status == 2).Count();
-        public int CountTaskCompleted => ProjectTaskDTO.Where(x => x.Status == 3).Count();
-#pragma warning restore CS8604 // Possible null reference argument.
+        public  IEnumerable<ProjectTaskDTO>? ProjectTasks { get; set;}
+        public int CountTask => ProjectTasks == null ? 0 : ProjectTasks.Count();
+        public int CountTaskPending => ProjectTasks == null ? 0 : ProjectTasks.Where(x => x.Status == 1).Count();
+        public int CountTaskInProgress => ProjectTasks == null ? 0 : ProjectTasks.Where(x => x.Status == 2).Count();
+        public int CountTaskCompleted => ProjectTasks == null ? 0 : ProjectTasks.Where(x => x.Status == 3).Count();
     }
 }

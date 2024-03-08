@@ -22,15 +22,23 @@ namespace TaskManagement.API.Repositories
 
         public async Task<IEnumerable<User>> GetAllAsync(FilterUser filterUser)
         {
-            filterUser.Email = (string.IsNullOrWhiteSpace(filterUser.Email)? string.Empty : filterUser.Email).Trim().ToLower();
+            filterUser.Email = (string.IsNullOrWhiteSpace(filterUser.Email)? string.Empty : filterUser.Email).Trim().ToLower();            
             return await dbContext.Users.Where(x => 
-                (filterUser.UserId == Guid.Empty || x.Id == filterUser.UserId) &&
+                (!filterUser.UserId.HasValue || x.Id == filterUser.UserId) &&
                 (string.IsNullOrWhiteSpace(filterUser.Email) || x.Email == filterUser.Email)).ToListAsync();
         }
 
         public async Task<User?> GetByIdAsync(Guid id)
         {
             return await dbContext.Users.FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+        public async Task<Guid> GetIdByEmail(string email)
+        {
+            var user = await dbContext.Users.FirstOrDefaultAsync(x => x.Email == email);
+#pragma warning disable CS8602 // Dereference of a possibly null reference.
+            return user.Id;
+#pragma warning restore CS8602 // Dereference of a possibly null reference.
         }
     }
 }

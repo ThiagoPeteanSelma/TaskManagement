@@ -8,5 +8,6 @@ namespace TaskManagement.API.Repositories
         Task<IEnumerable<User>> GetAllAsync(FilterUser filterUser);
         Task<User?> GetByIdAsync(Guid id);
         Task<User> AddUserAsync(User user);
+        Task<Guid> GetIdByEmail(string email);
     }
 }

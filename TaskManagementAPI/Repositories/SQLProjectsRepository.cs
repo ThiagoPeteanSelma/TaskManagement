@@ -18,6 +18,21 @@ namespace TaskManagement.API.Repositories
             return project;
         }
 
+        public async Task<Project?> DeleteProjectAsync(Guid id)
+        {
+            var existingProject = await dbContext.Projects.FindAsync(id);
+            if (existingProject == null)
+            {
+                return null;
+            }
+
+            dbContext.Projects.Remove(existingProject);
+
+            await dbContext.SaveChangesAsync();
+
+            return existingProject;
+        }
+
         public async Task<IEnumerable<Project>> GetAllAsync(FilterProject filterProject)
         {
             Guid idUser = filterProject.IdUser ?? Guid.Empty;
@@ -30,12 +45,32 @@ namespace TaskManagement.API.Repositories
                 }
             }
 
-            return await dbContext.Projects.Where(x=> (idUser == Guid.Empty || x.UserId == idUser)).Include(x=> x.User).Include(x=> x.ProjectTasks).ToListAsync();
+            return await dbContext.Projects.Where(x=> (idUser == Guid.Empty || x.UserId == idUser)).Include(x=> x.User).Include(x=> x.ProjectTasks).AsQueryable().ToListAsync();
         }
 
         public async Task<Project?> GetByIdAsync(Guid projectId)
         {
-            return await dbContext.Projects.Include(x => x.User).Include(x => x.ProjectTasks).FirstOrDefaultAsync(x => x.Id == projectId);
+            return await dbContext.Projects.Include(x => x.User).Include(x => x.ProjectTasks).AsQueryable().FirstOrDefaultAsync(x => x.Id == projectId);
+        }
+
+        public async Task<Project?> UpdateProjectAsync(Guid id, Project project)
+        {
+            var existProject = await dbContext.Projects.FindAsync(id);
+
+            if (existProject == null)
+            {
+                return null;
+            }
+
+            existProject.Name = project.Name;
+            existProject.Description = project.Description;
+            existProject.TeamReach = project.TeamReach;
+            existProject.DeadLine = project.DeadLine;
+            existProject.Budget = project.Budget;
+
+            await dbContext.SaveChangesAsync();
+
+            return existProject;
         }
     }
 }
