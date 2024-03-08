@@ -1,3 +1,4 @@
+//https://meteor-ocelot-f0d.notion.site/NET-C-5281edbec2e4480d98552e5ca0242c5b 
 using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
