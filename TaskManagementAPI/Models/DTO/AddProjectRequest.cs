@@ -2,7 +2,7 @@
 {
     public class AddProjectRequest
     {
-        public Guid? IdUser { get; set; }
+        public Guid? UserId { get; set; }
         public string? Email { get; set; }
         /// <summary>
         /// Project Name

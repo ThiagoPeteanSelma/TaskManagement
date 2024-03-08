@@ -13,10 +13,13 @@ namespace TaskManagement.API.Profiles
             CreateMap<AddUserRequest, User>().ReverseMap();
 
             CreateMap<Project, ProjectDTO>().ReverseMap();
-            CreateMap<FilterProject, Project>().ReverseMap();
             CreateMap<AddProjectRequest, Project>().ReverseMap();
             CreateMap<UpdateProjectRequest, Project>().ReverseMap();
 
+
+            CreateMap<ProjectTask, ProjectTaskDTO>().ReverseMap();
+            CreateMap<AddProjectTaskRequest, ProjectTask>().ReverseMap();
+            CreateMap<UpdateProjectTaskRequest, ProjectTask>().ReverseMap();
         }
     }
 }

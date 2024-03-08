@@ -6,6 +6,7 @@ using System.Diagnostics;
 using TaskManagement.API.Models.Domain;
 using TaskManagement.API.Models.DTO;
 using TaskManagement.API.Repositories;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace TaskManagement.API.Controllers
 {
@@ -19,12 +20,12 @@ namespace TaskManagement.API.Controllers
         /// <summary>
         /// List all projects by one user
         /// </summary>
-        /// <param name="filterProject">find with iduser or email</param>
+        /// <param name="filter">find with iduser or email</param>
         /// <returns>list project by user</returns>
         [HttpGet]
-        public async Task<IActionResult> GetAllProjectsAsync([FromQuery] FilterProject filterProject)
+        public async Task<IActionResult> GetAllProjectsAsync([FromQuery] FilterUser filter)
         {
-            if (!ValidateGetAllProjects(filterProject))
+            if (!ValidateGetAllProjects(filter))
             {
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
                 return BadRequest(string.Join(" ", ModelState.SelectMany(s => s.Value.Errors).Select(e => e.ErrorMessage)));
@@ -32,7 +33,7 @@ namespace TaskManagement.API.Controllers
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
 
 
-            var projectDTO = mapper.Map<IEnumerable<ProjectDTO>>(await projectRepository.GetAllAsync(filterProject));
+            var projectDTO = mapper.Map<IEnumerable<ProjectDTO>>(await projectRepository.GetAllAsync(filter));
 
             return !projectDTO.Any() ? NotFound() : Ok(projectDTO);
         }
@@ -73,7 +74,7 @@ namespace TaskManagement.API.Controllers
                 Budget = addProjectRequest.Budget,
                 DeadLine = addProjectRequest.DeadLine,
                 TeamReach = addProjectRequest.TeamReach,
-                UserId = addProjectRequest.IdUser ?? await usersRepository.GetIdByEmail(addProjectRequest.Email),
+                UserId = addProjectRequest.UserId ?? await usersRepository.GetIdByEmail(addProjectRequest.Email),
             };
 #pragma warning restore CS8604 // Possible null reference argument.
 
@@ -140,9 +141,9 @@ namespace TaskManagement.API.Controllers
         /// </summary>
         /// <param name="filterProject">field id user and email</param>
         /// <returns>return true if user put id or email and false if user not put any data</returns>
-        private bool ValidateGetAllProjects(FilterProject filterProject)
+        private bool ValidateGetAllProjects(FilterUser filter)
         {
-            if (!filterProject.IdUser.HasValue && string.IsNullOrEmpty(filterProject.Email))
+            if (!filter.UserId.HasValue && string.IsNullOrEmpty(filter.Email))
             {
                 ModelState.AddModelError("ID or Email", "Please enter a email or user ID to search.");
             }
@@ -157,10 +158,10 @@ namespace TaskManagement.API.Controllers
         /// <returns>if user don´t exist return false and true if exist</returns>
         private async Task<bool> ValidateCreateProjects(AddProjectRequest addProjectRequest)
         {
-            if (!ValidateGetAllProjects(new FilterProject() { Email = addProjectRequest.Email, IdUser = addProjectRequest.IdUser }))
+            if (!ValidateGetAllProjects(new FilterUser() { Email = addProjectRequest.Email, UserId = addProjectRequest.UserId }))
                 return false;
 
-            var user = await usersRepository.GetAllAsync(new FilterUser() { UserId = addProjectRequest.IdUser, Email = addProjectRequest.Email });
+            var user = await usersRepository.GetAllAsync(new FilterUser() { UserId = addProjectRequest.UserId, Email = addProjectRequest.Email });
             if (!user.Any())
                 ModelState.AddModelError("User", "User not exist!");
 
@@ -190,11 +191,14 @@ namespace TaskManagement.API.Controllers
             var project = await projectRepository.GetByIdAsync(id);
             if (project == null)
                 ModelState.AddModelError("Project", "Project not exist!");
-
+            ///Business Rules
+            ///2. **Restrições de Remoção de Projetos:**
+            ///-Um projeto não pode ser removido se ainda houver tarefas pendentes associadas a ele.
+            ///Caso o usuário tente remover um projeto com tarefas pendentes, a API deve retornar um erro e sugerir a conclusão ou remoção das tarefas primeiro.
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
             if (project.ProjectTasks != null)
-                if (project.ProjectTasks.Count() != project.ProjectTasks.Count(x => x.Status == 3))
-                    ModelState.AddModelError("Task", "One or more task need completed!");
+                if (project.ProjectTasks.Count() != project.ProjectTasks.Count(x => x.Status == StatusTask.Completed))
+                    ModelState.AddModelError("Task", "One or more task need completed or delete!");
 #pragma warning restore CS8602 // Dereference of a possibly null reference.
 
             return ModelState.ErrorCount <= 0;

@@ -1,5 +1,6 @@
 using FluentValidation.AspNetCore;
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 using TaskManagement.API.Data;
 using TaskManagement.API.Profiles;
 using TaskManagement.API.Repositories;
@@ -22,10 +23,15 @@ options.UseSqlServer(builder.Configuration.GetConnectionString("TaskManagementCo
 
 builder.Services.AddScoped<IUsersRepository, SQLUsersRepository>();
 builder.Services.AddScoped<IProjectsRepository, SQLProjectsRepository>();
+builder.Services.AddScoped<IProjectTasksRepository, SQLProjectTasksRepository>();
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles));
 builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
+builder.Services.AddControllers().AddJsonOptions(x =>
+{
+    x.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

@@ -43,8 +43,8 @@ namespace TaskManagement.API.Models.DTO
 
         public  IEnumerable<ProjectTaskDTO>? ProjectTasks { get; set;}
         public int CountTask => ProjectTasks == null ? 0 : ProjectTasks.Count();
-        public int CountTaskPending => ProjectTasks == null ? 0 : ProjectTasks.Where(x => x.Status == 1).Count();
-        public int CountTaskInProgress => ProjectTasks == null ? 0 : ProjectTasks.Where(x => x.Status == 2).Count();
-        public int CountTaskCompleted => ProjectTasks == null ? 0 : ProjectTasks.Where(x => x.Status == 3).Count();
+        public int CountTaskPending => ProjectTasks == null ? 0 : ProjectTasks.Where(x => x.Status == (int)StatusTask.Pending).Count();
+        public int CountTaskInProgress => ProjectTasks == null ? 0 : ProjectTasks.Where(x => x.Status == (int)StatusTask.In_Progress).Count();
+        public int CountTaskCompleted => ProjectTasks == null ? 0 : ProjectTasks.Where(x => x.Status == (int)StatusTask.Completed).Count();
     }
 }

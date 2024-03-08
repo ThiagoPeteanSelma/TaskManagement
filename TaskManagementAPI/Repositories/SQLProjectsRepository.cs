@@ -33,12 +33,12 @@ namespace TaskManagement.API.Repositories
             return existingProject;
         }
 
-        public async Task<IEnumerable<Project>> GetAllAsync(FilterProject filterProject)
+        public async Task<IEnumerable<Project>> GetAllAsync(FilterUser filter)
         {
-            Guid idUser = filterProject.IdUser ?? Guid.Empty;
+            Guid idUser = filter.UserId ?? Guid.Empty;
 
-            if (idUser == Guid.Empty && !string.IsNullOrWhiteSpace(filterProject.Email)) {
-                var user = await dbContext.Users.Where(x => x.Email == filterProject.Email).FirstOrDefaultAsync();
+            if (idUser == Guid.Empty && !string.IsNullOrWhiteSpace(filter.Email)) {
+                var user = await dbContext.Users.Where(x => x.Email == filter.Email).FirstOrDefaultAsync();
                 if (user != null)
                 {
                     idUser = user.Id;
